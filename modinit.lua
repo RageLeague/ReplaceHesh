@@ -1,5 +1,5 @@
 local HESH_NAME
-local function OnLoad()
+local function OnPreLoad()
     Content.AddStringTable("REPLACE_HESH", {
         REPLACE_HESH = {
             HESH = "Hesh",
@@ -10,10 +10,13 @@ local function OnLoad()
             REPLACEMENT_SET_DESC_EMPTY = "Now everything is back to normal.",
         },
     })
-    local old_loc = Game.Str
-    Game.Str = function(self, id)
-        
-        local old_str = old_loc(self, id)
+    local old_loc = Content.LookupString
+    Content.LookupString = function(id)
+
+        local old_str = old_loc(id)
+        if not old_str then
+            return old_str
+        end
         if id == "REPLACE_HESH.HESH" then
             if not HESH_NAME then
                 HESH_NAME = old_str
@@ -28,6 +31,11 @@ local function OnLoad()
         end
         return old_str
     end
+    function CharacterDef:GetLocalizedName( agent )
+        if self.name then
+            return loc.format( LOC(self:GetLocNameKey()), agent )
+        end
+    end
 end
 
 local MOD_OPTIONS =
@@ -38,9 +46,9 @@ local MOD_OPTIONS =
         key = "set_replacement",
         desc = "Set a replacement string for Hesh(if you already did, it's probably something else now). Leave blank to skip replacement.",
         on_click = function()
-            UIHelpers.EditString( 
+            UIHelpers.EditString(
                 LOC"REPLACE_HESH.ENTER_REPLACEMENT", LOC"REPLACE_HESH.ENTER_REPLACEMENT_DESC",
-                Content.GetModSetting(mod, "replace_to") or "", 
+                Content.GetModSetting(mod, "replace_to") or "",
                 function( val )
                     if not val then return end
                     if val ~= "" then
@@ -55,10 +63,10 @@ local MOD_OPTIONS =
     },
 }
 return {
-    version = "0.0.1",
+    version = "0.0.2",
     alias = "REPLACE_HESH",
-    
-    OnLoad = OnLoad,
+
+    OnPreLoad = OnPreLoad,
 
     mod_options = MOD_OPTIONS,
 
