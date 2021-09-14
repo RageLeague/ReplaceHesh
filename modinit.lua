@@ -1,4 +1,7 @@
+local filepath = require "util/filepath"
+
 local HESH_NAME
+
 local function OnPreLoad()
     Content.AddStringTable("REPLACE_HESH", {
         REPLACE_HESH = {
@@ -38,6 +41,16 @@ local function OnPreLoad()
     end
 end
 
+local function OnLoad( mod )
+    for k, filepath in ipairs( filepath.list_files( "REPLACE_HESH:ui/", "*.lua", true )) do
+        local name = filepath:match( "(.+)[.]lua$" )
+        -- print(name)
+        if name then
+            require(name)
+        end
+    end
+end
+
 local MOD_OPTIONS =
 {
     {
@@ -67,6 +80,7 @@ return {
     alias = "REPLACE_HESH",
 
     OnPreLoad = OnPreLoad,
+    OnLoad = OnLoad,
 
     mod_options = MOD_OPTIONS,
 
