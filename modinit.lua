@@ -42,6 +42,7 @@ local function OnPreLoad()
 end
 
 local function OnLoad( mod )
+    rawset(_G, "CURRENT_MOD_ID", mod.id)
     for k, filepath in ipairs( filepath.list_files( "REPLACE_HESH:ui/", "*.lua", true )) do
         local name = filepath:match( "(.+)[.]lua$" )
         -- print(name)

@@ -73,8 +73,11 @@ function StringReplacementEntry:init( w, h, old_string, new_string )
 end
 
 function StringReplacementEntry:SetData(old_string, new_string)
+    self.old_string = old_string
+    self.new_string = new_string
+
     self.old_string_line:SetText( old_string )
-    self.new_string_line:SetText( loc.format("[L] Replaced to: {1}", new_string) )
+    self.new_string_line:SetText( loc.format("> {1}", new_string) )
     self:SetToolTip( loc.format("[L] All instances of \"{1}\" will be replaced by \"{2}\"", old_string, new_string) )
 end
 
